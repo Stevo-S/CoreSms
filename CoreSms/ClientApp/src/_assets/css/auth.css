@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&display=swap");
+
+body {
+  font-family: "Fira Sans", sans-serif;
+  background-color: blue;
+}
+.Page {
+  margin: 0px auto;
+}
+
+.bg-paypal {
+  background-color: #0070ba;
+}
+
+.modal-login .modal-content {
+  padding: 10px;
+  border: none;
+}
+.modal-login .modal-header {
+  position: relative;
+  justify-content: center;
+}
+.modal-login {
+  text-align: center;
+  font-size: 26px;
+}
+.modal-login .form-group {
+  position: relative;
+}
+.modal-login i {
+  position: absolute;
+  left: 13px;
+  top: 11px;
+  font-size: 18px;
+}
+.modal-title {
+  font-family: "Fira Sans";
+}
+.modal-login .form-control {
+  padding-left: 40px;
+  font-size: 15px;
+  font-family: "Fira Sans";
+  color: #ff007f;
+}
+
+.modal-login .form-control,
+.modal-login .btn {
+  min-height: 45px;
+  border-radius: 3px;
+}
+.modal-login .hint-text {
+  text-align: center;
+  padding-top: 10px;
+  color: #ff007f;
+}
+.modal-login .close {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+.modal-login .btn {
+  background: #0070ba;
+  border: none;
+  line-height: normal;
+}
+.modal-login .btn:hover,
+.modal-login .btn:focus {
+  background: #0070ba;
+}
+.modal-login .modal-footer {
+  background: #ecf0f1;
+  text-align: center;
+  margin: 0 -20px -20px;
+  font-size: 13px;
+  justify-content: center;
+}
+.modal-login .modal-footer a {
+  color: #999;
+}
+.trigger-btn {
+  display: inline-block;
+  margin: 100px auto;
+}
+.login-holder-page {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  width: 60%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.copyright-footer {
+  padding: 12px;
+  font-family: "Fira Sans";
+  font-size: 14px;
+}
+
+.card-overlay {
+  position: relative;
+}
+.card-overlay:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
