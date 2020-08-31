@@ -209,16 +209,14 @@ export class peopleView extends React.Component {
 
         const token = await authService.getAccessToken();
         const response = await fetch('weatherforecast', {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+          headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
-
+      
+    
         const data = await response.json();
         this.setState({ forecasts: data, loading: false }, function(){
             console.log("token", this.state.forecasts);
-
         });
-
-
     }
 
 }
