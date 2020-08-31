@@ -77,12 +77,10 @@ class LogIn extends React.Component {
     } else {
       let formData = {
         "email_address": this.state.email_address,
-        "password": this.state.password,
-        "channel_type": 'web'
-      }
+        "password": this.state.password }
       console.log("DATA", formData)
       this.setState({ isLoading: true });
-      axios.post(baseURL + 'login/', formData, {
+      axios.post('https://localhost:5001/Identity/Account/Login', formData, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
@@ -101,22 +99,22 @@ class LogIn extends React.Component {
               submitted: true,
               isLoggedIn: true
             });
-            if (response.data.data.user.role_id == "1") {
-              window.setTimeout(function () {
-                window.location.href = "/dashboard_default";
-                this.setState({ isLoading: false });
-              }, 2000);
+            // if (response.data.data.user.role_id == "1") {
+            //   window.setTimeout(function () {
+            //     window.location.href = "/dashboard_default";
+            //     this.setState({ isLoading: false });
+            //   }, 2000);
 
-            } else {
-              window.setTimeout(function () {
-                window.location.href = "/dashboard";
-                this.setState({ isLoading: false });
-              }, 2000);
-            }
+            // } else {
+            //   window.setTimeout(function () {
+            //     window.location.href = "/dashboard";
+            //     this.setState({ isLoading: false });
+            //   }, 2000);
+            // }
 
 
           } else {
-            window.location.href = "/dashboard_default";
+            // window.location.href = "/dashboard_default";
             console.log("bayoo", response.data)
             this.setState({
               alert_error_color: "alert alert-danger",
@@ -130,7 +128,7 @@ class LogIn extends React.Component {
             });
           }
         }).catch(error => {
-          window.location.href = "/dashboard_default";
+          // window.location.href = "/dashboard_default";
           console.log('bayoo', error.response)
           this.setState({
             alert_error_color: "alert alert-danger",

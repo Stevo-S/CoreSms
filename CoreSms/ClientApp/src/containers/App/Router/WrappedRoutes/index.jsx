@@ -23,12 +23,13 @@ import BookingDashboard from '../../../Dashboards/Booking/index';
 
 import Mail from '../../../Mail/index';
 import Target from './Target';
+import { peopleView } from '../../../Target/People/peopleView';
 
 export default () => (
   <div>
     <Layout />
     <div className="container__wrap">
-      <Route path="/dashboard_default" component={DefaultDashboard} />
+      <Route path="/" component={peopleView} />
       <Route path="/dashboard_e_commerce" component={Commerce} />
       <Route path="/dashboard_fitness" component={FitnessDashboard} />
       <Route path="/dashboard_crypto" component={Crypto} />

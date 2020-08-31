@@ -8,6 +8,7 @@ import TopbarNotification from './TopbarNotification';
 import TopbarSearch from './TopbarSearch';
 import TopbarLanguage from './TopbarLanguage';
 import { UserProps } from '../../../shared/prop-types/ReducerProps';
+import authService from '../../../components/api-authorization/AuthorizeService';
 
 class Topbar extends PureComponent {
   static propTypes = {
@@ -15,6 +16,12 @@ class Topbar extends PureComponent {
     changeSidebarVisibility: PropTypes.func.isRequired,
     user: UserProps.isRequired,
   };
+
+ async componentDidMount(){
+    const token = await authService.getAccessToken();
+  
+    console.log("token", token)
+  }
 
   render() {
     const { changeMobileSidebarVisibility, changeSidebarVisibility, user } = this.props;

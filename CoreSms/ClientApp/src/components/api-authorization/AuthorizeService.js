@@ -80,9 +80,12 @@ export class AuthorizeService {
 
     async completeSignIn(url) {
         try {
+
             await this.ensureUserManagerInitialized();
             const user = await this.userManager.signinCallback(url);
             this.updateState(user);
+            console.log("bayo", url)
+
             return this.success(user && user.state);
         } catch (error) {
             console.log('There was an error signing in: ', error);

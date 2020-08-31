@@ -17,6 +17,10 @@ import BudgetStatistic from './components/BudgetStatistic';
 import BestSellingRegions from './components/BestSellingRegions';
 import GoalsCompletion from './components/GoalsCompletion';
 import { RTLProps } from '../../../shared/prop-types/ReducerProps';
+import authService from '../../../components/api-authorization/AuthorizeService';
+
+
+
 
 const DefaultDashboard = ({ t, rtl }) => (
   <Container className="dashboard">

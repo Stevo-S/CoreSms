@@ -9,53 +9,45 @@ import { TOKEN } from '../../../_helpers/token';
 import Pagination from '../../../shared/components/pagination/Pagination';
 import DataPaginationTable from '../../../shared/components/table/DataPaginationTable';
 import { peopleCreate } from './peopleCreate';
+import authService from '../../../components/api-authorization/AuthorizeService';
+import { FetchData } from '../../../components/FetchData';
 
 export class peopleView extends React.Component {
     constructor(props) {
         super(props);
-        this.submitNewUpdate = this.submitNewUpdate.bind(this);
-        this._onButtonClic = this._onButtonClic.bind(this);
+        this.state = { forecasts: [], loading: true };
 
         const myNewTheme = {
             rows: {
                 fontSize: '25px'
             }
         }
-        this._onButtonClick = this._onButtonClick.bind(this);
-        this.columns = [{
-            key: "idx",
-            text: "#",
-            TrOnlyClassName: 'tsc',
-            className: "tsc",
-            align: "left",
-
-        },
-        {
-            key: "name",
-            text: "Name",
+        this.columns = [ {
+            key: "date",
+            text: "Date",
             TrOnlyClassName: 'tsc',
 
             className: "tsc",
             align: "left",
         },
         {
-            key: "contact",
+            key: "temperatureC",
             TrOnlyClassName: 'tsc',
-            text: "Contact Information",
+            text: "Temp. (C)",
             className: "tsc",
             align: "left"
         },
         {
-            key: "channel",
+            key: "temperatureF",
             TrOnlyClassName: 'tsc',
-            text: "Channel",
+            text: "Temp. (F)",
             className: "tsc",
             align: "left"
         },
         {
-            key: "last_updated",
+            key: "summary",
             TrOnlyClassName: 'tsc',
-            text: "Last Updated",
+            text: "Summary",
             className: "tsc",
         },
         {
@@ -109,10 +101,7 @@ export class peopleView extends React.Component {
             page_size: 10,
             show_length_menu: false,
             length_menu: [5, 6, 8],
-            language: {
-                loading_text: "Please be patient while data loads..."
-            }
-
+            
         }
 
 
@@ -120,7 +109,6 @@ export class peopleView extends React.Component {
 
         this.state = {
             admins: [],
-            isLoading: true,
             showModal: false,
             showError: false,
             isShowError: false,
@@ -145,48 +133,7 @@ export class peopleView extends React.Component {
     }
 
     componentDidMount() {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbF9hZGRyZXNzIjoic2FAb25mb25tZWRpYS5jb20iLCJyb2xlX2lkIjoxLCJtc2lzZG4iOiIwNzEzMTMyODE5IiwiZmlyc3RfbmFtZSI6IkpvaG4iLCJsYXN0X25hbWUiOiJTYSIsInJlZ2lvbl9pZCI6MCwiaWQiOjEsInRpbWUiOiIyMDIwLTA4LTI0VDExOjIxOjU0LjIwNloiLCJpYXQiOjE1OTgyNjgxMTQsImV4cCI6MTU5ODMxMTMxNH0.5pzm4AfY3vTzBIuA6IJcYIzB6YnqoHcmj2jAuwceSLM'
-        // if (window.user.data.user.role_id == "1") {
-        axios.all([
-            axios.get(baseURL + "branches", { headers: { "Authorization": `Bearer ` + TOKEN } }),
-            axios.get(baseURL + "entities", { headers: { "Authorization": `Bearer ` + TOKEN } }),
-        ]).then(axios.spread((branchResponse, entityResponse) => {
-            this.setState({
-                admins: branchResponse.data,
-                entity: entityResponse.data,
-                isLoading: false
-            },
-                function () {
-                    console.log("bug", entityResponse.data);
-                    var data = [];
-                    var index_counter = this.state.admins.length;
-                    for (let i = 0; i < this.state.admins.length; i++) {
-                        var entiy_id = this.state.admins[i].entity_id;
-                        let mstatus = this.state.admins[i].status;
-                        let mstatuss
-                        if (mstatus === "1") {
-                            mstatuss = "active"
-                        } else if (mstatus === "0") {
-                            mstatuss = "inactive"
-                        }
-                        for (let k = 0; k < this.state.entity.length; k++) {
-                            if (entiy_id === this.state.entity[k].id) {
-                                let index = { idx: i + 1 };
-                                let statuss = { iddsx: mstatuss }
-
-                                data.push(Object.assign(index, statuss, this.state.entity[k], this.state.admins[i]));
-
-                                this.setState({
-                                    data: data
-                                })
-                                console.log("bugs", i);
-                            }
-                        }
-                    }
-                    index_counter--;
-                }
-            );
-        }))
+        this.populateWeatherData();
     }
 
 
@@ -211,224 +158,67 @@ export class peopleView extends React.Component {
         })
 
     }
-
-
-    submitNewUpdate(e) {
-        e.preventDefault();
-        const userInputData = {
-            "branch_name": this.state.branch_name,
-            "branch_description": this.state.branch_description,
-        }
-        console.log("reecrd", userInputData);
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + TOKEN
-            }
-        };
-        console.log("DATA", this.state.admin);
-        this.setState({ isLoading: true })
-
-        axios.put(baseURL + "branches/" + this.state.admin, userInputData, config).then(response => {
-            if (response.data.status) {
-                this.setState({ statusMessage: response.data.status_message, isShowError: true, isLoading: false });
-            } else {
-                this.setState({ statusMessage: response.data.status_message, showError: true, isShowError: false, isLoading: false });
-            }
-        }, error => {
-            this.setState({ statusMessage: JSON.stringify(error), isShowError: false, showError: true, isLoading: false });
-        });
-        this.setState({ school_name: '', school_code: '', postal_address: '' })
-
-    }
-
-    handleChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-    }
-
-
-    deleteRecord(record) {
-        console.log("Delete Record", record);
-
-        this.setState({
-            school_id: record.id,
-        });
-        const config = {
-            headers: {
-                "Authorization": `Bearer ` + TOKEN
-            }
-        };
-        axios.delete(baseURL + "branches/" + record.id, config).then(response => {
-
-            if (response.data.status) {
-                this.setState({ statusMessage: response.data.status_message, isShowError: true, isLoading: false });
-                window.setTimeout(function () {
-                    window.location.reload();
-                }, 1000);
-
-            } else {
-
-                this.setState({ statusMessage: response.data.status_message, isShowError: true, isLoading: false });
-            }
-
-        }, error => {
-            this.setState({ statusMessage: JSON.stringify(error), isShowError: true, isLoading: false });
-        });
-    }
-
-
-
-
-    _onButtonClick() {
-        this.setState({
-            showComponent: true,
-            hideComponent: true,
-            showModal: false,
-
-        });
-    }
-    _onButtonClic() {
-        this.setState({
-            hideComponent: false,
-            showModal: false,
-            isShowError: false
-
-        }, function () {
-            window.location.reload();
-
-        });
-
-
-    }
+    // static renderForecastsTable(forecasts) {
+    //     return (
+    //         < >
+               
+    //         </>
+    //       );
+    // }
 
     render() {
-        const { showComponent } = this.state;
-        const { hideComponent } = this.state;
-        const { isLoading } = this.state;
-        const { showModal } = this.state;
-        // console.log("Load", isLoading);
-
-
+      
         return (
+            <div>
+                <h1 id="tabelLabel" >Weather forecast</h1>
+                <p>This component demonstrates fetching data from the server.</p>
+                < Col md={12} lg={12} >
+                    < Card >
+                        <CardBody >
+                            <div className="panel-body" >
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <Button className="pull-right"
+                                            color="primary"
+                                            onClick={this._onButtonClick} outline> Add Person </Button><br /> <br /><br />
+                                    </div>
 
-            <div style={
-                { marginTop: '25px' }} > {
-                    showComponent && (
-                        <div >
-
-                            {
-                                this.state.showComponent ?
-                                    < peopleCreate /> : null
-                            }
-                        </div>)}
-                {!hideComponent && (
-                    < >
-                        < Col md={12} lg={12} >
-                            < Card >
-                                <CardBody >
-                                    <div className="panel-body" >
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <Button className="pull-right"
-                                                    color="primary"
-                                                    onClick={this._onButtonClick} outline> Add Person </Button><br /> <br /><br />
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <h4>BAYO</h4>
-                                            </div>
-                                        </div>
-                                        {this.state.isShowError ?
-                                            <div className="alert alert-success" > {this.state.statusMessage}
-                                            </div> : null
-                                        }
-                                        < ReactDatatable config={this.config}
-                                            records={this.state.data}
-                                            id="tsc"
-                                            columns={this.columns}
-                                            loading={this.state.isLoading}
-                                            extraButtons={this.extraButtons}
-                                        /> </div>
-                                </CardBody>
-
-                            </Card>
-                        </Col>
-                    </>
-                )}
-
-                {showModal && (
-                    <Col md={12} lg={12}>
-                        <Card>
-                            <CardBody><br />
-                                <Button className="pull-right" color="primary" onClick={this._onButtonClic} outline> List of Branches</Button>
-
-                                <div className="card__title">
-                                    <h5 className="bold-text">Fill the Below Fields to Edit a Branch</h5>
+                                    <div className="col-md-6">
+                                        <h4>BAYO</h4>
+                                    </div>
                                 </div>
+                                {this.state.isShowError ?
+                                    <div className="alert alert-success" > {this.state.statusMessage}
+                                    </div> : null
+                                }
+                                < ReactDatatable config={this.config}
+                                    records={this.state.forecasts}
+                                    id="tsc"
+                                    columns={this.columns}
+                                    loading={this.state.isLoading}
+                                    extraButtons={this.extraButtons}
+                                /> </div>
+                        </CardBody>
 
-                                {this.state.showError ? <div style={{ color: 'red' }}>
-                                    {this.state.statusMessage}
-
-                                </div> : null}<br></br>
-
-
-                                {this.state.isShowError ? (
-                                    <div
-                                        color="success"
-                                        style={{ fontSize: "13px", color: "green" }}>
-                                        {this.state.statusMessage}
-                                    </div>
-
-                                ) : null}<br></br>
-                                <form className="form" onSubmit={this.submitNewUpdate} >
-
-                                    <div className="col-md-6" >
-                                        <div className="form-group" >
-                                            <label className="form-label" > Branch Name </label>
-
-                                            < input id="input"
-                                                type="text"
-                                                className="form-control input-md"
-                                                name="branch_name"
-                                                required placeholder="Enter Branch Name"
-                                                value={this.state.branch_name}
-                                                onChange={this.handleChange}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6" >
-                                        <div className="form-group" >
-                                            <label className="form-label" > Branch Description </label>
-                                            <input id="input"
-                                                type="text"
-                                                className="form-control"
-                                                name="branch_description"
-                                                required placeholder="Enter Branch Description"
-                                                value={this.state.branch_description}
-                                                onChange={this.handleChange}
-                                            />
-
-                                        </div>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <Button type="submit" color="primary" className="btn-paypal btn-lg pull-right
-                                                                 text-white " >
-                                            {this.state.isLoading ? "Please Wait..." : "Submit"}  <i className="fa fa-refresh"></i>
-                                        </Button> &nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                </form>
-
-                            </CardBody>
-                        </Card>
-                    </Col>
-
-                )}
-            </div>
-
-        )
+                    </Card>
+                </Col>            </div>
+        );
     }
+
+    async populateWeatherData() {
+
+        const token = await authService.getAccessToken();
+        const response = await fetch('weatherforecast', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+        this.setState({ forecasts: data, loading: false }, function(){
+            console.log("token", this.state.forecasts);
+
+        });
+
+
+    }
+
 }

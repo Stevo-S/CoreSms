@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect, Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Redirect } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
 import * as firebase from 'firebase/app';
@@ -17,6 +17,7 @@ import firebaseConfig from '../../config/firebase';
 import Auth0Provider from '../../shared/components/auth/withAuth0';
 import Loading from '../../shared/components/Loading';
 import auth0Config from '../../config/auth0';
+import { NavMenu } from '../../components/NavMenu';
 
 i18n.init(i18nextConfig);
 
@@ -69,6 +70,7 @@ class App extends Component {
 
   render() {
     const { loaded, loading } = this.state;
+    const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
     return (
       <Provider store={store}>
         <Auth0Provider
@@ -78,7 +80,7 @@ class App extends Component {
           returnTo={`${window.location.origin}/dashboard_default`}
           onRedirectCallback={this.onRedirectCallbackAuth0}
         >
-          <BrowserRouter>
+          <BrowserRouter  basename={baseUrl}>
             <I18nextProvider i18n={i18n}>
               <ScrollToTop>
                 <Fragment>
@@ -89,6 +91,7 @@ class App extends Component {
                     }
                   <ConnectedThemeComponent>
                     <div>
+                     
                       <Router />
                     </div>
                   </ConnectedThemeComponent>
