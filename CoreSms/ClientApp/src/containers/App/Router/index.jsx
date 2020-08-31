@@ -18,15 +18,16 @@ import { Home } from '../../../components/Home';
 import { Login } from '../../../components/api-authorization/Login';
 import Layout from '../../Layout';
 import { NavMenu } from '../../../components/NavMenu';
-import { peopleView } from '../../Target/People/peopleView';
+import { peopleView } from '../../Target/People/peopleViews';
+
 
 const Router = () => (
   <MainWrapper>
     <main>
    
       <Switch>
-
-        <AuthorizeRoute path='/fetch-data' component={FetchData} />
+        
+        
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
         <Route path="/404" component={NotFound404} />
         <Route path="/lock_screen" component={LockScreen} />
@@ -35,7 +36,7 @@ const Router = () => (
         <Route path="/register_photo" component={RegisterPhoto} />
         <Route path="/reset_password" component={ResetPassword} />
         <Route path="/reset_password_photo" component={ResetPasswordPhoto} />
-        <AuthorizeRoute path="/" component={WrappedRoutes} />
+        <Route path="/" component={WrappedRoutes} />
       </Switch>
     </main>
   </MainWrapper>

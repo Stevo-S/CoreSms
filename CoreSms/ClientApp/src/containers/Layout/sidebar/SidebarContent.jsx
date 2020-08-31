@@ -29,7 +29,13 @@ class SidebarContent extends Component {
 
           </SidebarCategory>
           </ul>
-
+          {/* <SidebarLink
+              title="Log In"
+              route="/log_in"
+              icon="user"
+              newLink
+              onClick={this.hideSidebar}
+            />  */}
           <ul className="sidebar__block">
 
 
@@ -75,8 +81,8 @@ class SidebarContent extends Component {
               </button>
             </SidebarCategory>
             <SidebarLink
-              title="Log In"
-              route="/log_in"
+              title="Log Out"
+              route="/Identity/Account/Login"
               icon="user"
               newLink
               onClick={this.hideSidebar}
