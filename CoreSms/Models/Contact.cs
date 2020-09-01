@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,9 @@ namespace CoreSms.Models
     public class Contact
     {
         public long Id { get; set; }
+
+        [StringLength(12)]
+        public string PhoneNumber { get; set; }
 
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
