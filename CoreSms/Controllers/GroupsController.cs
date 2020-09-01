@@ -53,6 +53,7 @@ namespace CoreSms.Controllers
                 return BadRequest();
             }
 
+            @group.UpdatedAt = DateTime.Now; 
             _context.Entry(@group).State = EntityState.Modified;
 
             try
@@ -80,6 +81,9 @@ namespace CoreSms.Controllers
         [HttpPost]
         public async Task<ActionResult<Group>> PostGroup(Group @group)
         {
+            @group.CreatedAt = DateTime.Now;
+            @group.UpdatedAt = DateTime.Now;
+
             _context.Groups.Add(@group);
             await _context.SaveChangesAsync();
 
