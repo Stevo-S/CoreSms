@@ -92,7 +92,8 @@ namespace CoreSms.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostContact([FromBody] Contact[] contacts)
+         [Route("/api/ContactList")]
+        public async Task<ActionResult> PostContacts([FromBody] Contact[] contacts)
         {
             foreach(var contact in contacts)
             {

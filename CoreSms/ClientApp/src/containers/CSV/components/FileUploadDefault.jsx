@@ -11,6 +11,7 @@ import { withTranslation } from 'react-i18next';
 import renderDropZoneField from '../../../shared/components/form/DropZone';
 import { TOKEN } from '../../../_helpers/token';
 import { baseURL } from '../../../_helpers';
+import authService from '../../../components/api-authorization/AuthorizeService';
 
 const handleChangeCSV = event => {
   console.log("FETCHER", event.target.files);
@@ -23,6 +24,9 @@ const handleChangeCSV = event => {
 class FileUploadDefault extends React.Component {
   constructor(props) {
     super(props)
+
+
+    this.updateData = this.updateData.bind(this)
 
     this.state = {
       isLoading: false,
@@ -39,37 +43,52 @@ class FileUploadDefault extends React.Component {
     var data = new FormData();
     data.append("file", this.state.csvfile);
     this.setState({ isLoading: true });
+    var Papa = require("papaparse/papaparse.min.js");
+    Papa.parse(this.state.csvfile, {
+      header: true,
+      download: true,
+      skipEmptyLines: true,
+      // Here this is also available. So we can call our custom class method
+      complete: this.updateData
+    });
 
-    axios.post(baseURL + 'csv-upload', data, {
+  }
+  async updateData(result) {
+    const data = result.data;
+
+    const token = await authService.getAccessToken();
+    axios.post('api/ContactList', data, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + TOKEN
+        'Authorization': 'Bearer ' + token
       },
     }).then((response) => {
-      if (response.data.status) {
-        this.setState({ statusMessage: response.data.status_message, isShowError: true, loading: false, isLoading: false },
-          function(){
+      console.log("data", token)
+
+      if (response.status) {
+        this.setState({ statusMessage: "Success", isShowError: true, loading: false, isLoading: false },
+          function () {
             console.log("bayo")
           }
-          
-          );
+
+        );
       } else {
-        this.setState({ statusMessage: response.data.status_message, isShowError: false, showError: true, loading: false, isLoading: false },
-          function(){
+        this.setState({ statusMessage: "error", isShowError: false, showError: true, loading: false, isLoading: false },
+          function () {
             console.log("bayoddd")
           }
-         
-          );
+
+        );
       }
 
     }).catch((error) => {
       console.log('bayoo', error.response)
-      this.setState({ isShowError: false, loading: false, statusMessage: error.response.data.status_message, showError: true, isLoading: false },
-        function(){
+      this.setState({ isShowError: false, loading: false, statusMessage:"error", showError: true, isLoading: false },
+        function () {
           console.log("bayyyo")
         }
-       );
+      );
     })
   }
 

@@ -1,16 +1,21 @@
 import React, { Fragment } from 'react';
 import ReactDatatable from '@ashvin27/react-datatable';
-import axios from 'axios';
-import ReactLoading from 'react-loading';
+import { CircleLoading } from 'react-loadingg'
 
+import axios from 'axios';
 import { Card, CardBody, Col, Button } from 'reactstrap';
 import { baseURL } from '../../../_helpers';
 import { TOKEN } from '../../../_helpers/token';
+import { BranchCreate } from './branchCreate';
 import Pagination from '../../../shared/components/pagination/Pagination';
 import DataPaginationTable from '../../../shared/components/table/DataPaginationTable';
-import { peopleCreate } from './peopleCreate';
 
-export class peopleView extends React.Component {
+
+
+
+export class BranchView extends React.Component {
+
+
     constructor(props) {
         super(props);
         this.submitNewUpdate = this.submitNewUpdate.bind(this);
@@ -21,6 +26,7 @@ export class peopleView extends React.Component {
                 fontSize: '25px'
             }
         }
+
         this._onButtonClick = this._onButtonClick.bind(this);
         this.columns = [{
             key: "idx",
@@ -31,32 +37,47 @@ export class peopleView extends React.Component {
 
         },
         {
-            key: "name",
-            text: "Name",
+            key: "branch_name",
+            text: "Branch Name",
             TrOnlyClassName: 'tsc',
 
             className: "tsc",
             align: "left",
         },
         {
-            key: "contact",
+            key: "branch_type",
             TrOnlyClassName: 'tsc',
-            text: "Contact Information",
+            text: "Branch Name",
+            className: "tsc",
+            align: "left"
+        },
+
+        {
+            key: "entity_name",
+            TrOnlyClassName: 'tsc',
+            text: "Entity Name",
             className: "tsc",
             align: "left"
         },
         {
-            key: "channel",
+            key: "entity_level",
             TrOnlyClassName: 'tsc',
-            text: "Channel",
+            text: "Entity Level",
             className: "tsc",
             align: "left"
         },
         {
-            key: "last_updated",
+            key: "branch_description",
             TrOnlyClassName: 'tsc',
-            text: "Last Updated",
+            text: "Branch Description",
             className: "tsc",
+        },
+        {
+            key: "iddsx",
+            text: "Status",
+            TrOnlyClassName: "tsc",
+            className: "tsc",
+            align: "left"
         },
         {
             key: "action",
@@ -145,7 +166,6 @@ export class peopleView extends React.Component {
     }
 
     componentDidMount() {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbF9hZGRyZXNzIjoic2FAb25mb25tZWRpYS5jb20iLCJyb2xlX2lkIjoxLCJtc2lzZG4iOiIwNzEzMTMyODE5IiwiZmlyc3RfbmFtZSI6IkpvaG4iLCJsYXN0X25hbWUiOiJTYSIsInJlZ2lvbl9pZCI6MCwiaWQiOjEsInRpbWUiOiIyMDIwLTA4LTI0VDExOjIxOjU0LjIwNloiLCJpYXQiOjE1OTgyNjgxMTQsImV4cCI6MTU5ODMxMTMxNH0.5pzm4AfY3vTzBIuA6IJcYIzB6YnqoHcmj2jAuwceSLM'
         // if (window.user.data.user.role_id == "1") {
         axios.all([
             axios.get(baseURL + "branches", { headers: { "Authorization": `Bearer ` + TOKEN } }),
@@ -160,16 +180,25 @@ export class peopleView extends React.Component {
                     console.log("bug", entityResponse.data);
                     var data = [];
                     var index_counter = this.state.admins.length;
+
                     for (let i = 0; i < this.state.admins.length; i++) {
                         var entiy_id = this.state.admins[i].entity_id;
+
                         let mstatus = this.state.admins[i].status;
+
                         let mstatuss
+
                         if (mstatus === "1") {
                             mstatuss = "active"
+
                         } else if (mstatus === "0") {
                             mstatuss = "inactive"
+
                         }
+
+
                         for (let k = 0; k < this.state.entity.length; k++) {
+
                             if (entiy_id === this.state.entity[k].id) {
                                 let index = { idx: i + 1 };
                                 let statuss = { iddsx: mstatuss }
@@ -187,6 +216,61 @@ export class peopleView extends React.Component {
                 }
             );
         }))
+        // }
+        // if (window.user.data.user.role_id == "2") {
+        //     axios.all([
+        //         axios.get(baseURL + "branches", { headers: { "Authorization": `Bearer ${window.user.data.access_token}` } }),
+        //         axios.get(baseURL + "regions?id=" + window.user.data.user.region_id, { headers: { "Authorization": `Bearer ${window.user.data.access_token}` } }),
+        //         axios.get(baseURL + "entities", { headers: { "Authorization": `Bearer ${window.user.data.access_token}` } }),
+        //     ]).then(axios.spread((branchResponse, regionResponse, entityResponse) => {
+        //         this.setState(
+        //             {
+        //                 admins: branchResponse.data,
+        //                 region: regionResponse.data,
+        //                 entity: entityResponse.data,
+        //                 isLoading: false
+        //             },
+        //             function () {
+        //                 console.log("bug", entityResponse.data);
+        //                 var data = [];
+        //                 for (let i = 0; i < this.state.admins.length; i++) {
+        //                     //alert(this.state.users[i].id);
+        //                     var user_id = this.state.admins[i].region_id;
+
+        //                     console.log("teachers", user_id);
+        //                     for (let j = 0; j < this.state.region.length; j++) {
+
+        //                         console.log("EVANS", this.state.region[j].id);
+
+        //                         if (user_id === this.state.region[j].id) {
+
+
+        //                             var entiy_id = this.state.admins[i].entity_id;
+
+        //                             for (let k = 0; k < this.state.entity.length; k++) {
+
+        //                                 if (entiy_id === this.state.entity[k].id) {
+
+        //                                     data.push(Object.assign(this.state.entity[k], this.state.region[j], this.state.admins[i]))
+
+        //                                     this.setState({
+        //                                         data: data
+        //                                     })
+
+        //                                     console.log("EVANS", data);
+        //                                 }
+
+        //                             }
+        //                         }
+
+
+        //                     }
+        //                 }
+        //             }
+        //         );
+        //     }))
+        // }
+
     }
 
 
@@ -258,7 +342,7 @@ export class peopleView extends React.Component {
         });
         const config = {
             headers: {
-                "Authorization": `Bearer ` + TOKEN
+                "Authorization": `Bearer `+TOKEN
             }
         };
         axios.delete(baseURL + "branches/" + record.id, config).then(response => {
@@ -321,26 +405,22 @@ export class peopleView extends React.Component {
 
                             {
                                 this.state.showComponent ?
-                                    < peopleCreate /> : null
+                                    < BranchCreate /> : null
                             }
-                        </div>)}
-                {!hideComponent && (
+                        </div>
+                    )
+                } {!hideComponent && (
                     < >
+
                         < Col md={12} lg={12} >
                             < Card >
                                 <CardBody >
-                                    <div className="panel-body" >
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <Button className="pull-right"
-                                                    color="primary"
-                                                    onClick={this._onButtonClick} outline> Add Person </Button><br /> <br /><br />
-                                            </div>
 
-                                            <div className="col-md-6">
-                                                <h4>BAYO</h4>
-                                            </div>
-                                        </div>
+
+                                    <div className="panel-body" >
+                                        <Button className="pull-right"
+                                            color="primary"
+                                            onClick={this._onButtonClick} outline> Add Branch </Button><br /> <br /><br />
                                         {this.state.isShowError ?
                                             <div className="alert alert-success" > {this.state.statusMessage}
                                             </div> : null
@@ -357,7 +437,8 @@ export class peopleView extends React.Component {
                             </Card>
                         </Col>
                     </>
-                )}
+                )
+                }
 
                 {showModal && (
                     <Col md={12} lg={12}>

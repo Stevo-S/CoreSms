@@ -9,9 +9,9 @@ import { baseURL } from '../../../_helpers';
 import { Card, CardBody, Col, Button, ButtonToolbar } from 'reactstrap';
 import { peopleView } from './peopleView';
 import authService from '../../../components/api-authorization/AuthorizeService';
-import { Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
-export class peopleCreate extends React.Component {
+export class addContact extends React.Component {
 
     constructor(props) {
         super(props)
@@ -21,6 +21,7 @@ export class peopleCreate extends React.Component {
             hideComponent: true,
 
         };
+        this._onButtonClick = this._onButtonClick.bind(this);
         this.changeStatus = this.changeStatus.bind(this);
 
 
@@ -31,16 +32,20 @@ export class peopleCreate extends React.Component {
             }, {
                 name: 'Female'
             }],
-
+            type: [{
+                name: 'boarding'
+            }, {
+                name: 'day'
+            }],
             selectedGender: '',
             branch_name: '',
             branch_description: '',
             postal_address: '',
             role_id: '4',
+            alert_color:'',
             isLoading: false,
             isShowError: false,
             entity_id: '',
-            alert_color: '',
             statusMessage: '',
             password: '',
             entity_count: '',
@@ -75,14 +80,16 @@ export class peopleCreate extends React.Component {
     }
     async populateWeatherData() {
         let formData = {
-            "name": this.state.branch_name,
-            "description": this.state.branch_description,
+            "firstName": this.state.branch_name,
+            "lastName": this.state.postal_address,
+            "middleName": this.state.branch_description,
+            "phoneNumber": this.state.onSelectChange,
 
         }
         console.log("DATA", JSON.stringify(formData))
         this.setState({ isLoading: true });
         const token = await authService.getAccessToken();
-        axios.post('api/groups', formData, {
+        axios.post('api/Contacts', formData, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -90,23 +97,37 @@ export class peopleCreate extends React.Component {
             },
         })
             .then((response) => {
-                console.log('bayoo', response.data)
+                console.log('bayoo', response.status)
                 if (response.status = 201) {
-                    this.setState({ statusMessage: "Group Created Successfully", isShowError: true, alert_color: "alert alert-success", isLoading: false });
+                    this.setState({ statusMessage: "Contact Created Successfully", isShowError: true, alert_color: "alert alert-success", isLoading: false });
                     window.setTimeout(function () {
-                        window.location.reload();
+                        window.location = "/main/dashboard"
                     }, 1000);
 
                 } else {
 
-                    this.setState({ statusMessage: response.data.status_message, alert_color: "alert alert-danger", isShowError: true, isLoading: false });
+                    this.setState({ statusMessage: "error", alert_color: "alert alert-danger", isShowError: true, isLoading: false });
                 }
 
             }, error => {
-                this.setState({ statusMessage: JSON.stringify(error), isShowError: true, alert_color: "alert alert-danger", isLoading: false });
+                this.setState({ statusMessage: "error", isShowError: true, alert_color: "alert alert-danger", isLoading: false });
             });
+    }
+
+    Country() {
+
+        return (this.state.entity && this.state.entity.length > 0 &&
+            this.state.entity.map((countyItem, i) =>
+                ({ label: countyItem.entity_name, value: countyItem.id })))
 
     }
+
+    onSelectChange = value => {
+
+        this.setState({ entity_id: value.value.toString() });
+    };
+
+
     toSchoolList(e) {
         e.preventDefault();
         this.setState({ isLoading: true });
@@ -138,6 +159,11 @@ export class peopleCreate extends React.Component {
         this.setState({ selectedCounty: event.target.value });
     };
 
+
+
+    _onButtonClick() {
+    
+    }
     changeStatus() {
         this.setState({
             isShowError: false
@@ -154,6 +180,15 @@ export class peopleCreate extends React.Component {
         return (
             <div className="pcoded-main-container">
 
+                {/* {showComponent && (
+                    <div>
+
+                        {this.state.showComponent ?
+                            <peopleView /> : null
+                        }
+
+                    </div>
+                )} */}
 
                 {!hideComponent && (
                     <>
@@ -162,13 +197,13 @@ export class peopleCreate extends React.Component {
                         <Col md={12} lg={12}>
                             <Card>
                                 <CardBody><br />
-                                    <Link to="/peopleView">
+                                    <Link to="/viewContact">
                                         <Button className="pull-right"
                                             color="primary"
-                                            onClick={this._onButtonClick} outline> View Group </Button>
+                                            onClick={this._onButtonClick} outline> View Contacts </Button>
                                     </Link>
                                     <div className="card__title">
-                                        <h5 className="bold-text">Fill the Below Fields to Add a Group</h5>
+                                        <h5 className="bold-text">Fill the Below Fields to Add a Contact</h5>
                                     </div>
 
                                     {this.state.showError ? <div style={{ color: this.state.alert_color }}>
@@ -190,7 +225,7 @@ export class peopleCreate extends React.Component {
 
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label className="form-label">Group Name</label>
+                                                <label className="form-label">First Name</label>
                                                 <input id="input" type="text" className="form-control input-md"
                                                     name="branch_name" required placeholder="Enter Group Name"
                                                     value={this.state.branch_name} onChange={this.handleChange} />
@@ -198,10 +233,29 @@ export class peopleCreate extends React.Component {
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <label className="form-label">Group Description</label>
+                                                <label className="form-label">Middle Name</label>
+                                                <input id="input" type="text" className="form-control input-md"
+                                                    name="branch_description"  placeholder="Enter Middle Name"
+                                                    value={this.state.branch_description}
+                                                    onChange={this.handleChange} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label className="form-label">Last Name</label>
+                                                <input id="input" type="text" className="form-control input-md"
+                                                    name="postal_address" required placeholder="Enter Last Name"
+                                                    value={this.state.postal_address}
+                                                    onChange={this.handleChange} />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-group">
+                                                <label className="form-label">Phone</label>
                                                 <input id="input" type="text" className="form-control"
-                                                    name="branch_description" required placeholder="Enter Group Description"
-                                                    value={this.state.branch_description} onChange={this.handleChange} />
+                                                    name="onSelectChange" required placeholder="Enter Phone Number"
+                                                    value={this.state.onSelectChange}
+                                                    onChange={this.handleChange} />
                                             </div>
                                         </div>
 

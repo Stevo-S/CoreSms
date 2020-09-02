@@ -103,7 +103,7 @@ const Grids = ({ t }) => (
         </Card>
       </Col>
     </Row>
-    <Row>
+    <Row className="col-md-6 offset-md-3">
       <Col md={6} sm={12}>
         <Card className="grid">
           <CardBody>

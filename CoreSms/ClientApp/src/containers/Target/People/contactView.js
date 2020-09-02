@@ -13,7 +13,7 @@ import authService from '../../../components/api-authorization/AuthorizeService'
 import { FetchData } from '../../../components/FetchData';
 import { Link } from 'react-router-dom';
 
-export class peopleView extends React.Component {
+export class contactView extends React.Component {
     constructor(props) {
         super(props);
         this.state = { forecasts: [], loading: true };
@@ -32,19 +32,34 @@ export class peopleView extends React.Component {
             align: "left",
         },
         {
-            key: "name",
+            key: "firstName",
             TrOnlyClassName: 'tsc',
-            text: "Name",
+            text: "First Name",
             className: "tsc",
             align: "left"
         },
         {
-            key: "description",
+            key: "middleName",
             TrOnlyClassName: 'tsc',
-            text: "Description",
+            text: "Middle Name",
             className: "tsc",
             align: "left"
         },
+        {
+            key: "lastName",
+            TrOnlyClassName: 'tsc',
+            text: "Last Name",
+            className: "tsc",
+            align: "left"
+        },
+        {
+            key: "subscribed",
+            TrOnlyClassName: 'tsc',
+            text: "Subcribe",
+            className: "tsc",
+            align: "left"
+        },
+    
         {
             key: "contactGroups",
             TrOnlyClassName: 'tsc',
@@ -183,12 +198,12 @@ export class peopleView extends React.Component {
                 "Authorization": `Bearer ` + token
             }
         };
-        axios.delete("api/Groups/" + record.id, config).then(response => {
+        axios.delete("api/Contacts/" + record.id, config).then(response => {
 
             if (response.status = 201) {
                 this.setState({ statusMessage: "Deleted successfully", isShowError: true, alert_color: "alert alert-success", isLoading: false });
                 window.setTimeout(function () {
-                    window.location.reload();
+                    window.location = "/viewContact";
                 }, 1000);
 
             } else {
@@ -217,20 +232,21 @@ export class peopleView extends React.Component {
                                 <div className="panel-body" >
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <Link to="/peopleCreate">
+                                            <Link to="/addContact">
                                                 <Button className="pull-right"
                                                     color="primary"
-                                                    onClick={this._onButtonClick} outline> Add Group </Button>
+                                                    onClick={this._onButtonClick} outline> Add Contact </Button>
                                             </Link>
                                             <br /> <br /><br />
                                         </div>
 
                                         <div className="col-md-6">
-                                            <h4>List of Groups</h4>
+                                            <h4>List of Contacts</h4>
                                         </div>
                                     </div>
+                                    
                                     {this.state.isShowError ?
-                                        <div className={this.state.alert_color} > {this.state.statusMessage}
+                                        <div style={{color: this.state.alert_color }}> {this.state.statusMessage}
                                         </div> : null
                                     }
                                     < ReactDatatable config={this.config}
@@ -254,7 +270,7 @@ export class peopleView extends React.Component {
     async populateWeatherData() {
 
         const token = await authService.getAccessToken();
-        const response = await fetch('api/Groups', {
+        const response = await fetch('api/Contacts', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
 
